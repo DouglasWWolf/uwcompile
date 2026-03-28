@@ -1,0 +1,13 @@
+# voltages
+cmd_index : 1, read_en : 1
+cmd_index : 2, liq_a : 1.6
+
+loop_control : begin x 3
+   cmd_index : 42
+
+   loop_control : begin y 0
+       cmd_index : 3
+   loop_control : end y
+
+loop_control : end x
+cmd_index : 4
