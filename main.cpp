@@ -872,7 +872,7 @@ void show_help()
 
 
 //=================================================================================================
-// parse_command_line() - Fills in the "opt" from the command line options
+// parse_command_line() - Fills in the "opt" structure from the command line options
 //=================================================================================================
 void parse_command_line(const char** argv)
 {
