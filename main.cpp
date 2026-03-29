@@ -57,7 +57,14 @@ struct uw_cmd_t
 {
     uint32_t    cmd_index;
     uint16_t    cmd_duration;
-    uint16_t    read_flags;
+
+    uint8_t     read_en                 : 1;
+    uint8_t     read_phase              : 1;
+    uint8_t     read_bright_flag        : 1;
+    uint8_t     read_safe_halting_point : 1;
+    uint8_t     read_generated_flag     : 1;
+    uint16_t    read_flags_reserved     : 11;
+
     uint16_t    read_start_time;
     uint16_t    read_characterization_id;
     uint16_t    read_data_type;
@@ -84,7 +91,12 @@ struct uw_cmd_t
     uint16_t    liq_b;
     uint16_t    liq_sw_delay;
 
-    uint16_t    switch_flags;
+    uint8_t     vpretop_sw      : 1;
+    uint8_t     vprebot_sw      : 1;
+    uint8_t     refp_sw         : 1;
+    uint8_t     refn_sw         : 1;
+    uint8_t     liq_sw          : 1;
+    uint16_t    switch_reserved : 11;
 
     uint16_t    roll_pre_top_duration;
     uint16_t    roll_pre_top_start;
@@ -469,7 +481,6 @@ void parse_loop_control(string& s)
 void append_master_record(vector<kv_pair_t>& v)
 {
     rec_t       rec;
-    uint16_t    bit;
 
     // Don't attempt to translate an empty vector of key/value pairs
     if (v.size() == 0) return;
@@ -504,40 +515,34 @@ void append_master_record(vector<kv_pair_t>& v)
 
         if (kv.key == "read_en")
         {
-            bit = parse_bit(kv.value);
-            rec.command.read_flags |= (bit << 0);
+            rec.command.read_en = parse_bit(kv.value);
             continue;            
         }
 
         if (kv.key == "read_phase")
         {
-            bit = parse_bit(kv.value);
-            rec.command.read_flags |= (bit << 1);
+            rec.command.read_phase = parse_bit(kv.value);
             continue;            
         }
 
         if (kv.key == "read_bright_flag")
         {
-            bit = parse_bit(kv.value);
-            rec.command.read_flags |= (bit << 2);
+            rec.command.read_bright_flag = parse_bit(kv.value);
             continue;            
         }
 
         if (kv.key == "read_safe_halting_point")
         {
-            bit = parse_bit(kv.value);
-            rec.command.read_flags |= (bit << 3);
+            rec.command.read_safe_halting_point = parse_bit(kv.value);
             continue;            
         }
 
         // This is a hack-ish synonym for "read_safe_halting_point"
         if (kv.key == "command_type")
         {
-            bit = parse_command_type(kv.value);
-            rec.command.read_flags |= (bit << 3);
+            rec.command.read_safe_halting_point = parse_command_type(kv.value);
             continue;            
         }
-
 
         if (kv.key == "read_start_time")
         {
@@ -649,36 +654,31 @@ void append_master_record(vector<kv_pair_t>& v)
 
         if (kv.key == "vpretop_sw")
         {
-            bit = parse_bit(kv.value);
-            rec.command.switch_flags |= (bit << 0);
+            rec.command.vpretop_sw = parse_bit(kv.value);
             continue;            
         }
 
         if (kv.key == "vprebot_sw")
         {
-            bit = parse_bit(kv.value);
-            rec.command.switch_flags |= (bit << 1);
+            rec.command.vprebot_sw = parse_bit(kv.value);
             continue;            
         }
 
         if (kv.key == "refp_sw")
         {
-            bit = parse_bit(kv.value);
-            rec.command.switch_flags |= (bit << 2);
+            rec.command.refp_sw = parse_bit(kv.value);
             continue;            
         }
 
         if (kv.key == "refn_sw")
         {
-            bit = parse_bit(kv.value);
-            rec.command.switch_flags |= (bit << 3);
+            rec.command.refn_sw = parse_bit(kv.value);
             continue;            
         }
 
         if (kv.key == "liq_sw")
         {
-            bit = parse_bit(kv.value);
-            rec.command.switch_flags |= (bit << 4);
+            rec.command.liq_sw = parse_bit(kv.value);
             continue;            
         }
 
