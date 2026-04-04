@@ -237,7 +237,7 @@ bool parse_key_value_token(const char*& in, char* out, bool is_key)
     }
 
     // Trim off trailing spaces
-    if (out != buffer && *(out-1) == ' ') --out;
+    while (out != buffer && *(out-1) == ' ') --out;
 
     // Terminate the output string
     *out = 0;
