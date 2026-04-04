@@ -334,6 +334,12 @@ void build_master_record_list()
             kv.value = value;
             kv_vect.push_back(kv);
 
+            // Check for missing commas
+            if (kv.key != "loop_control" && kv.value.find(' ') != string::npos)
+            {
+                throw_runtime("missing comma in line %i (near \"%s\")", line_number, value);                
+            }
+
             // If this is the end of the line, we're done in this loop,
             // otherwise, skip over the comma that "in" is pointing at
             if (is_eol)
